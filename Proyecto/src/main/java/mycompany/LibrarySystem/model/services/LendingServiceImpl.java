@@ -1,5 +1,3 @@
-// src/main/java/mycompany/SpringPruebaMVC/model/services/LendingServiceImpl.java
-
 package mycompany.LibrarySystem.model.services;
 
 import mycompany.LibrarySystem.model.entities.Lending;
@@ -12,10 +10,13 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- *Clase que implementa los metodos de gestion de libros definidos en la interfaz LendingService.
+ * Clase que implementa los métodos definidos en la interfaz {@link LendingService} para la gestión de préstamos.
+ * 
+ * <p>Proporciona la lógica de negocio necesaria para realizar operaciones sobre los préstamos, como la creación,
+ * actualización, eliminación y búsqueda de préstamos pendientes de devolución.</p>
  * 
  * @author Luis Montero
- * @version 02/12/24
+ * @version 02/12/2024
  */
 @Service
 public class LendingServiceImpl implements LendingService {
@@ -24,56 +25,58 @@ public class LendingServiceImpl implements LendingService {
     private final BookService bookService;
 
     /**
-     *Constructor que inyecta las dependencias {@link lendingRepository} y {@link bookService}.
+     * Constructor que inyecta las dependencias {@link LendingRepository} y {@link BookService}.
      * 
-     * @param lendingRepository interfaz que permite el uso de operaciones de gestión de préstamos.
-     * @param bookService
+     * @param lendingRepository Repositorio que proporciona acceso a las operaciones relacionadas con préstamos.
+     * @param bookService Servicio que permite gestionar las operaciones relacionadas con libros.
      */
     @Autowired
     public LendingServiceImpl(LendingRepository lendingRepository, BookService bookService) {
         this.lendingRepository = lendingRepository;
         this.bookService = bookService;
     }
-    
+
     /**
-     *Devuelve todos los préstamos del sistema.
+     * Devuelve todos los préstamos registrados en el sistema.
      * 
-     * @return Lista de préstamos registrados en el sistema.
+     * @return Lista de objetos {@link Lending} que representan los préstamos existentes en la base de datos.
      */
     @Override
     public List<Lending> findAllLendings() {
         return lendingRepository.findAll();
     }
-    
+
     /**
-     *Busca y devuelve un préstamo segun su identificador.
+     * Busca y devuelve un préstamo basado en su identificador único.
      * 
-     * @param id identificador unico del préstamo.
-     * @return Préstamo que corresponda al identificador, en caso de no encontrarse, devolverá {@code null}.
+     * @param id Identificador único del préstamo.
+     * @return Objeto {@link Lending} que corresponde al identificador proporcionado, o {@code null} si no se encuentra.
      */
     @Override
     public Lending findLendingById(Integer id) {
         Optional<Lending> optionalLending = lendingRepository.findById(id);
         return optionalLending.orElse(null);
     }
+
     /**
-     *Guarda un préstamo en el sistema.
+     * Guarda o actualiza un préstamo en el sistema.
      * 
-     * <p>Este metodo es transaccional, por lo que se gestiona el inicio, la confirmación y una reversión si es necesaria.</p>
+     * <p>Este método es transaccional, lo que significa que todas las operaciones dentro de este método se 
+     * confirmarán o revertirán como una sola unidad.</p>
      * 
-     * @param lending libro que se guardara o actualizará.
-     * @return Préstamo guardado.
+     * @param lending Objeto {@link Lending} que se desea guardar o actualizar.
+     * @return El objeto {@link Lending} guardado o actualizado.
      */
     @Override
     @Transactional
     public Lending saveLending(Lending lending) {
         return lendingRepository.save(lending);
     }
-    
+
     /**
-     *Elimina un préstamo del sistema.
+     * Elimina un préstamo del sistema basado en su identificador único.
      * 
-     * @param id identificador unico del préstamo a eliminar.
+     * @param id Identificador único del préstamo a eliminar.
      */
     @Override
     public void deleteLending(Integer id) {
@@ -81,10 +84,12 @@ public class LendingServiceImpl implements LendingService {
     }
 
     /**
-     *Busca y devuelve los prestamos pendientes de un usuario.
+     * Busca préstamos pendientes de un usuario basándose en un término de búsqueda.
      * 
-     * @param searchTerm termino por el cual se buscara al usuario (nombre o apellidos).
-     * @return Lista de prestamos del usuario cuyo nombre o apellidos coincida con el termino.
+     * <p>El término de búsqueda puede coincidir con el nombre, apellido paterno o apellido materno del usuario asociado.</p>
+     * 
+     * @param searchTerm Término de búsqueda utilizado para encontrar los préstamos pendientes del usuario.
+     * @return Lista de objetos {@link Lending} que coinciden con el término de búsqueda.
      */
     @Override
     public List<Lending> searchPendingLendingsByUser(String searchTerm) {
@@ -92,14 +97,17 @@ public class LendingServiceImpl implements LendingService {
     }
 
     /**
-     *Se procesa un devolución de un libro
+     * Procesa la devolución de un libro asociado a un préstamo.
      * 
-     * <p>Si el libro aun no esta devuelto, guarda la fecha de devolución y cambia su disponibilidad, en caso de que 
-     * ya este devuelto, arrojará una excepción al igual que en el caso de no encontrar el libro.</p>
+     * <p>Si el préstamo aún no se ha devuelto, se registra la fecha de devolución y se actualiza la disponibilidad del libro.</p>
      * 
-     * <p>Este metodo es transaccional, por lo que se gestiona el inicio, la confirmación y una reversión si es necesaria.</p>
+     * <p>En caso de que el préstamo ya haya sido devuelto o no se encuentre, se lanzará una excepción.</p>
      * 
-     * @param lendingId identificador unico del prestamo
+     * <p>Este método es transaccional para garantizar la consistencia de las operaciones relacionadas con el préstamo y el libro.</p>
+     * 
+     * @param lendingId Identificador único del préstamo a procesar.
+     * @throws IllegalStateException Si el préstamo ya ha sido devuelto.
+     * @throws IllegalArgumentException Si el préstamo no se encuentra.
      */
     @Override
     @Transactional
@@ -123,3 +131,4 @@ public class LendingServiceImpl implements LendingService {
         }
     }
 }
+

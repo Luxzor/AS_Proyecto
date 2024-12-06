@@ -12,36 +12,40 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
- *Controlador que gestiona los usuarios almacenados en la base de datos del sistema.
+ * Controlador que gestiona los usuarios almacenados en la base de datos del sistema.
+ * 
+ * <p>Proporciona funcionalidades para listar, crear, editar y eliminar usuarios.</p>
+ * 
+ * <p>Los datos se envían a las vistas utilizando el objeto {@link Model}.</p>
  * 
  * @author José Murcia
- * @version 02/12/24
+ * @version 02/12/2024
  */
 @Controller
 @RequestMapping("/users")
 public class UsersController {
 
     private final UserService userService;
-    
     private static final Logger logger = LoggerFactory.getLogger(UsersController.class);
-    
+
     /**
-     *Constructor que inyecta el servicio de usuarios.
+     * Constructor que inyecta el servicio de usuarios.
      * 
-     * @param userService servicio que proporciona acceso a las operaciones de usuario.
+     * @param userService Servicio que proporciona acceso a las operaciones relacionadas con los usuarios.
      */
-    @Autowired 
+    @Autowired
     public UsersController(UserService userService) {
         this.userService = userService;
     }
 
     /**
-     *Lista los usuarios almacenados en el sistema.
+     * Lista los usuarios almacenados en el sistema.
      * 
+     * <p>Si se proporciona una cadena de búsqueda, se listarán únicamente los usuarios cuyos 
+     * nombres contengan dicha cadena. En caso contrario, se mostrarán todos los usuarios registrados.</p>
      * 
-     * @param search cadena de busqueda que se ingresa, en caso de ser {@code null}, se mostraran todos los
-     * usuarios.
-     * @param model modelo utilizado para pasar datos a la vista.
+     * @param search Cadena de búsqueda ingresada por el usuario. Si es {@code null} o vacía, se mostrarán todos los usuarios.
+     * @param model Modelo utilizado para pasar datos a la vista.
      * @return Nombre de la vista {@code "users/list"}.
      */
     @GetMapping
@@ -58,10 +62,13 @@ public class UsersController {
     }
 
     /**
-     *Muestra el formulario para crear usuarios
+     * Muestra el formulario para crear un nuevo usuario.
      * 
-     * @param model modelo utilizado para pasar datos a la vista.
-     * @return El nombre de la vista {@code "users/form"}.
+     * <p>Crea un objeto vacío de tipo {@link User} y lo añade al modelo para que la vista
+     * lo utilice como base para un nuevo registro de usuario.</p>
+     * 
+     * @param model Modelo utilizado para pasar datos a la vista.
+     * @return Nombre de la vista {@code "users/form"}.
      */
     @GetMapping("/new")
     public String showCreateForm(Model model) {
@@ -71,9 +78,12 @@ public class UsersController {
     }
 
     /**
-     *Agrega un nuevo usuario al sistema.
+     * Guarda un nuevo usuario en el sistema.
      * 
-     * @param user usuario a agregar.
+     * <p>Este método también se utiliza para actualizar un usuario existente si se proporciona
+     * un identificador único válido en el objeto {@link User}.</p>
+     * 
+     * @param user Objeto {@link User} recibido desde el formulario de la vista.
      * @return Redirección a la lista de usuarios.
      */
     @PostMapping("/save")
@@ -83,18 +93,20 @@ public class UsersController {
     }
 
     /**
-     *Muestra el formulario de edicion para un usuario en especifico.
+     * Muestra el formulario de edición para un usuario específico.
      * 
-     * @param id identificador unico del usuario a editar.
-     * @param model modelo utilizado para pasar datos a la vista.
-     * @return Si el usuario no existe se da una redirección a la lista de usuarios, en caso contrario, se retorna el
-     * nombre de la vista {@code "users/form"}.
+     * <p>Si el usuario no existe, redirige a la lista de usuarios. Si existe, añade los datos 
+     * del usuario al modelo para que puedan ser editados en la vista.</p>
+     * 
+     * @param id Identificador único del usuario a editar.
+     * @param model Modelo utilizado para pasar datos a la vista.
+     * @return Nombre de la vista {@code "users/form"} si el usuario existe; en caso contrario,
+     * redirección a la lista de usuarios.
      */
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable("id") Integer id, Model model) {
         User user = userService.findUserById(id);
         if (user == null) {
-            
             return "redirect:/users";
         }
         model.addAttribute("user", user);
@@ -102,9 +114,11 @@ public class UsersController {
     }
 
     /**
-     *Elimina un usuario del sistema.
+     * Elimina un usuario del sistema.
      * 
-     * @param id identificador unico del usuario.
+     * <p>Si el usuario no existe, no se realiza ninguna acción.</p>
+     * 
+     * @param id Identificador único del usuario a eliminar.
      * @return Redirección a la lista de usuarios.
      */
     @GetMapping("/delete/{id}")
@@ -112,15 +126,16 @@ public class UsersController {
         userService.deleteUser(id);
         return "redirect:/users";
     }
-    
+
     /**
-     *Elimina varios usuarios seleccionados del sistema.
+     * Elimina varios usuarios seleccionados del sistema.
      * 
-     * <p>En caso de no seleccionar usuarios se muestra un mensaje de advertencia y se redirigirá a la lista de usuarios,
-     * en caso contrario, intentará eliminar los usuarios seleccionados y gestionara posibles errores.</p>
+     * <p>Si no se seleccionan usuarios, muestra un mensaje de advertencia en la vista. Si se seleccionan 
+     * usuarios, intenta eliminarlos y gestiona posibles errores, mostrando mensajes de éxito o error en 
+     * la vista.</p>
      * 
-     * @param selectedUsers lista de identificadores de usuarios.
-     * @param redirectAttributes atributos para enviar mensajes de estado entre redirecciones.
+     * @param selectedUsers Lista de identificadores de usuarios seleccionados para eliminar.
+     * @param redirectAttributes Atributos utilizados para enviar mensajes de estado entre redirecciones.
      * @return Redirección a la lista de usuarios.
      */
     @PostMapping("/bulkDelete")
@@ -144,3 +159,4 @@ public class UsersController {
         return "redirect:/users";
     }
 }
+

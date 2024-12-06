@@ -1,4 +1,3 @@
-
 package mycompany.LibrarySystem.controller;
 
 import mycompany.LibrarySystem.model.entities.Lending;
@@ -12,10 +11,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Controlador que efectua las devoluciones pendientes de un usuario.
+ * Controlador que gestiona las devoluciones de préstamos en el sistema.
  * 
- * @author Jose Murcia
- * @version 12/02/24
+ * <p>Proporciona funcionalidades para buscar préstamos pendientes por usuario y 
+ * procesar devoluciones.</p>
+ * 
+ * <p>Los datos se envían a las vistas utilizando el objeto {@link Model}.</p>
+ * 
+ * @author José Murcia
+ * @version 12/02/2024
  */
 @Controller
 @RequestMapping("/returns")
@@ -28,7 +32,7 @@ public class ReturnsController {
     /**
      * Constructor que inyecta el servicio de préstamos.
      * 
-     * @param lendingService servicio que porporciona acceso a las operaciones de préstamos.
+     * @param lendingService Servicio que proporciona acceso a las operaciones relacionadas con los préstamos.
      */
     @Autowired
     public ReturnsController(LendingService lendingService) {
@@ -36,22 +40,20 @@ public class ReturnsController {
         logger.info("ReturnsController initialized");
     }
 
-    
     /**
-     * Redirige al formulario de devoluciones.
+     * Redirige al formulario principal de devoluciones.
      * 
-     * @return Redirección al formulario de devoluciones.
+     * @return Redirección a la vista del formulario de devoluciones.
      */
     @GetMapping
     public String redirectToForm() {
         return "redirect:/returns/form";
     }
 
-    
     /**
-     * Muestra el formulario de devoluciones. 
+     * Muestra el formulario de devoluciones.
      * 
-     * @param model modelo utilizado para pasar datos a la vista.
+     * @param model Modelo utilizado para pasar datos a la vista.
      * @return Nombre de la vista del formulario de devoluciones.
      */
     @GetMapping("/form")
@@ -59,16 +61,15 @@ public class ReturnsController {
         return "returns/form";
     }
 
-    
     /**
-     * Busca los prestamos del usuario seleccionado
+     * Busca préstamos pendientes asociados a un usuario específico.
      * 
-     * <p>En caso de no encontrar al usuario o prestamos asociados al usuario, desplegara un mensaje en la vista. En
-     * caso contrario, mostrara las devoluciones asociadas al usuarios en la vista</p>
+     * <p>Si no se encuentran préstamos pendientes para el usuario proporcionado, se muestra
+     * un mensaje en la vista. En caso contrario, se listan los préstamos pendientes.</p>
      * 
-     * @param userName cadena con la que se buscara el nombre del usuario.
-     * @param model modelo utilizado para pasar datos a la vista.
-     * @return Nombre la vista del formulario de devoluciones.
+     * @param userName Nombre del usuario para realizar la búsqueda.
+     * @param model Modelo utilizado para pasar datos a la vista.
+     * @return Nombre de la vista del formulario de devoluciones.
      */
     @GetMapping("/searchByUser")
     public String searchByUser(@RequestParam("userName") String userName, Model model) {
@@ -85,14 +86,18 @@ public class ReturnsController {
         return "returns/form";
     }
 
-    
     /**
-     * Procesa y efectua la devolución en la base de datos.
+     * Procesa la devolución de un préstamo específico.
      * 
-     * @param lendingId identificador unico del préstamo.
-     * @param userName cadena con la que se buscara el nombre del usuario.
-     * @param model modelo utilizado para pasar datos a la vista.
-     * @return
+     * <p>Si la devolución es exitosa, se notifica al usuario mediante un mensaje. Si ocurre
+     * un error, también se muestra un mensaje en la vista. Tras procesar la devolución, se redirige 
+     * al formulario de búsqueda o al formulario principal de devoluciones.</p>
+     * 
+     * @param lendingId Identificador único del préstamo a devolver.
+     * @param userName Nombre del usuario asociado al préstamo (opcional, para mantener la búsqueda activa).
+     * @param model Modelo utilizado para pasar datos a la vista.
+     * @return Redirección al formulario de búsqueda con el nombre del usuario (si se proporcionó),
+     *         o al formulario principal de devoluciones.
      */
     @PostMapping("/process")
     public String processReturn(@RequestParam("lendingId") Integer lendingId,
@@ -108,7 +113,7 @@ public class ReturnsController {
             logger.error("Error al procesar la devolución para lendingId {}: {}", lendingId, e.getMessage());
         }
 
-        
+        // Retorna al formulario de búsqueda si el nombre del usuario está presente, de lo contrario al formulario principal
         if (userName != null && !userName.isEmpty()) {
             return "redirect:/returns/searchByUser?userName=" + userName;
         } else {
@@ -116,3 +121,4 @@ public class ReturnsController {
         }
     }
 }
+

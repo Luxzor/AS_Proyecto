@@ -18,7 +18,7 @@ package mycompany.LibrarySystem.model.entities;
  *     <li><strong>DELETE_USER:</strong> Acción de eliminar un usuario del sistema.</li>
  * </ul>
  * 
- * @author César Miam 
+ * @author Luis Montero
  * @version 01/12/2024
  */
 public enum ActionType {

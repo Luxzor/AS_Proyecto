@@ -11,7 +11,7 @@ import java.util.List;
  * <p>Actua como un contrato para la capa de servicios, proporcionando metodos para realizar operaciones  
  * sobre los usuarios, como encontrar uno o todos, guardar, eliminar, buscar por cadena en nombre y eliminar varios.</p>
  * 
- * @author José Antonio
+ * @author David Escalante
  * @version 01/12/2024
  */
 public interface UserService {

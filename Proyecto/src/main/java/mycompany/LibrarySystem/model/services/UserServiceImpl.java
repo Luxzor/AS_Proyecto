@@ -14,7 +14,7 @@ import java.util.Optional;
 /**
  *Clase que implementa los metodos de gestion de usuarios definidos en la interfaz UserService.
  * 
- * @author José Antonio
+ * @author Sebastian Laines
  * @version 02/12/24
  */
 @Service

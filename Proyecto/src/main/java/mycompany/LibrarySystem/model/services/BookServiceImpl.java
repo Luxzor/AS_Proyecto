@@ -11,6 +11,12 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ *Clase que implementa los metodos de gestion de libros definidos en la interfaz BookService.
+ * 
+ * @author Jose Murcia
+ * @version 12/02/24
+ */
 @Service
 public class BookServiceImpl implements BookService {
 

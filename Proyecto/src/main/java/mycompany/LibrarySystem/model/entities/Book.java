@@ -8,7 +8,7 @@ import java.util.List;
 /**
  *Clase que define el objeto Book.
  * 
- * @author César Miam
+ * @author Luis Montero
  * @version 01/12/24
  */
 @Entity

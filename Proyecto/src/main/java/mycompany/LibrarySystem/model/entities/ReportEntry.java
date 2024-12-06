@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 /**
  *Clase que define el objeto ReportEntry.
  * 
- * @author César Miam
+ * @author Luis Montero
  * @version 01/12/24
  */
 @Entity

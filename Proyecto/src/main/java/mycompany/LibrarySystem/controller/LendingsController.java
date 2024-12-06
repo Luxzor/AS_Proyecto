@@ -21,6 +21,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
  * 
  * <p>Permite listar, guardar, crear, eliminar y editar reportes del sistema.</p>
  * <p>Pasa los datos a la vista usando el objeto {@link Model}</p>
+ * 
  * @author David Escalante
  * @version 02/12/2024
  */

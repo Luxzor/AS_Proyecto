@@ -11,6 +11,12 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Controlador que efectua las devoluciones pendientes de un usuario.
+ * 
+ * @author Jose Murcia
+ * @version 12/02/24
+ */
 @Controller
 @RequestMapping("/returns")
 public class ReturnsController {
@@ -19,6 +25,11 @@ public class ReturnsController {
 
     private final LendingService lendingService;
 
+    /**
+     * Constructor que inyecta el servicio de préstamos.
+     * 
+     * @param lendingService servicio que porporciona acceso a las operaciones de préstamos.
+     */
     @Autowired
     public ReturnsController(LendingService lendingService) {
         this.lendingService = lendingService;
@@ -26,18 +37,39 @@ public class ReturnsController {
     }
 
     
+    /**
+     * Redirige al formulario de devoluciones.
+     * 
+     * @return Redirección al formulario de devoluciones.
+     */
     @GetMapping
     public String redirectToForm() {
         return "redirect:/returns/form";
     }
 
     
+    /**
+     * Muestra el formulario de devoluciones. 
+     * 
+     * @param model modelo utilizado para pasar datos a la vista.
+     * @return Nombre de la vista del formulario de devoluciones.
+     */
     @GetMapping("/form")
     public String showReturnForm(Model model) {
         return "returns/form";
     }
 
     
+    /**
+     * Busca los prestamos del usuario seleccionado
+     * 
+     * <p>En caso de no encontrar al usuario o prestamos asociados al usuario, desplegara un mensaje en la vista. En
+     * caso contrario, mostrara las devoluciones asociadas al usuarios en la vista</p>
+     * 
+     * @param userName cadena con la que se buscara el nombre del usuario.
+     * @param model modelo utilizado para pasar datos a la vista.
+     * @return Nombre la vista del formulario de devoluciones.
+     */
     @GetMapping("/searchByUser")
     public String searchByUser(@RequestParam("userName") String userName, Model model) {
         logger.info("Buscando préstamos pendientes para el usuario: {}", userName);
@@ -54,6 +86,14 @@ public class ReturnsController {
     }
 
     
+    /**
+     * Procesa y efectua la devolución en la base de datos.
+     * 
+     * @param lendingId identificador unico del préstamo.
+     * @param userName cadena con la que se buscara el nombre del usuario.
+     * @param model modelo utilizado para pasar datos a la vista.
+     * @return
+     */
     @PostMapping("/process")
     public String processReturn(@RequestParam("lendingId") Integer lendingId,
                                 @RequestParam(value = "userName", required = false) String userName,

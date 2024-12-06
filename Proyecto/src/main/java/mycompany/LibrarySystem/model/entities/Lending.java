@@ -9,7 +9,7 @@ import jakarta.validation.constraints.PastOrPresent;
 /**
  *Clase que define el objeto Lending.
  * 
- * @author César Miam
+ * @author Luis Montero
  * @version 01/12/24
  */
 @Entity

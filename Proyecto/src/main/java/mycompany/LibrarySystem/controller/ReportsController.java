@@ -29,7 +29,7 @@ public class ReportsController {
     private final ReportEntryService reportEntryService;
 
     /**
-     *Constructor que inyecta el servicio de entrada de reportes
+     *Constructor que inyecta el servicio de entrada de reportes.
      * 
      * @param reportEntryService servicio que proporciona acceso a las operaciones de reportes.
      */

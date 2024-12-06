@@ -16,7 +16,7 @@ import org.hibernate.annotations.Immutable;
  * <p>Esta clase se utiliza para recuperar los detalles completos de un préstamo y se utiliza principalmente 
  * en la generación de reportes o vistas detalladas sobre los préstamos en el sistema.</p>
  * 
- * @author César Miam
+ * @author Luis Montero
  * @version 01/12/24
  */
 @Entity

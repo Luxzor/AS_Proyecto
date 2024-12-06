@@ -1,0 +1,70 @@
+<!-- src/main/resources/templates/lendings/form.html -->
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <title th:text="${#strings.isEmpty(lending.id) ? 'Nuevo Préstamo' : 'Editar Préstamo'}">Formulario de Préstamo</title>
+        <!-- Bootstrap CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    </head>
+    <body>
+        <!-- Incluir la navbar desde el fragmento -->
+        <div th:replace="~{fragments :: navbar}"></div>
+
+        <div class="container mt-4">
+            <h1 th:text="${#strings.isEmpty(lending.id) ? 'Nuevo Préstamo' : 'Editar Préstamo'}">Formulario de Préstamo</h1>
+
+            <!-- Mensaje de éxito -->
+            <div th:if="${message}" class="alert alert-success" role="alert">
+                <p th:text="${message}"></p>
+            </div>
+
+            <!-- Mensaje de error -->
+            <div th:if="${error}" class="alert alert-danger" role="alert">
+                <p th:text="${error}"></p>
+            </div>
+
+            <form th:action="@{/lendings/save}" th:object="${lending}" method="post">
+
+
+                <!-- Seleccionar Usuario -->
+                <div class="mb-3">
+                    <label for="user" class="form-label">Usuario</label>
+                    <select th:field="*{user}" class="form-select" id="user" required>
+                        <option value="" disabled th:selected="${#lists.isEmpty(lending.user)}">Selecciona un usuario</option>
+                        <option th:each="user : ${users}" th:value="${user.id}" 
+                                th:text="${user.name + ' ' + user.lastNameP + ' ' + user.lastNameM}"
+                                th:selected="${user.id} == ${lending.user != null ? lending.user.id : 0}">Usuario</option>
+                    </select>
+                </div>
+
+                <!-- Seleccionar Libro -->
+                <div class="mb-3">
+                    <label for="book" class="form-label">Libro</label>
+                    <select th:field="*{book}" class="form-select" id="book" required>
+                        <option value="" disabled th:selected="${#lists.isEmpty(lending.book)}">Selecciona un libro</option>
+                        <option th:each="book : ${books}" th:value="${book.id}" th:text="${book.title}" 
+                                th:selected="${book.id} == ${lending.book != null ? lending.book.id : 0}">Libro</option>
+                    </select>
+                </div>
+
+                <!-- Fecha de Salida -->
+                <div class="mb-3">
+                    <label for="dateOut" class="form-label">Fecha de Salida</label>
+                    <input type="date" th:field="*{dateOut}" class="form-control" id="dateOut" required readonly>
+                </div>
+
+
+                <!-- Botones de acción -->
+                <button type="submit" class="btn btn-primary">Guardar Préstamo</button>
+                <a th:href="@{/lendings}" class="btn btn-secondary">Cancelar</a>
+            </form>
+        </div>
+            <div th:replace="fragments :: footer"></div>
+
+
+        <!-- Bootstrap JS y dependencias -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
+</html>

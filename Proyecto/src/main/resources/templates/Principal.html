@@ -1,0 +1,106 @@
+<!-- src/main/resources/templates/principal.html -->
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <title>Principal - Sistema Biblioteca</title>
+        <!-- Bootstrap CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    </head>
+    <body>
+
+        <div th:replace="fragments :: navbar"></div>
+
+        <div class="container mt-4">
+            <h1 class="mb-4 text-center">Bienvenido al Sistema Bibliotecario</h1>
+            <p class="text-center">Descubre una nueva forma de gestionar tu biblioteca con nuestra plataforma web 
+                desarrollada con Spring y una robusta base de datos. Nuestro sistema bibliotecario está diseñado para 
+                facilitar la administración de préstamos, libros y usuarios, ofreciendo una experiencia intuitiva y 
+                eficiente para administradores.</p>
+
+            
+            <div class="row align-items-center">
+                
+                
+
+                <!-- Sección de Accesos Rápidos -->
+                <div class="col-md-6">
+                    <div class="row">
+                        <!-- Préstamos -->
+                        <div class="col-12 mb-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Préstamos</h5>
+                                    <p class="card-text">Gestiona los préstamos de libros a los usuarios.</p>
+                                    <a th:href="@{/lendings}" class="btn btn-primary">Ir a Préstamos</a>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Devoluciones -->
+                        <div class="col-12 mb-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Devoluciones</h5>
+                                    <p class="card-text">Procesa las devoluciones de libros por parte de los usuarios.</p>
+                                    <a th:href="@{/returns}" class="btn btn-primary">Ir a Devoluciones</a>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Usuarios -->
+                        <div class="col-12 mb-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Usuarios</h5>
+                                    <p class="card-text">Gestiona la información de los usuarios registrados.</p>
+                                    <a th:href="@{/users}" class="btn btn-primary">Ir a Usuarios</a>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Libros -->
+                        <div class="col-12 mb-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Libros</h5>
+                                    <p class="card-text">Gestiona el catálogo de libros disponibles en la biblioteca.</p>
+                                    <a th:href="@{/books}" class="btn btn-primary">Ir a Libros</a>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Reportes -->
+                        <div class="col-12 mb-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Reportes</h5>
+                                    <p class="card-text">Visualiza y actualiza los reportes de movimientos de libros, prestamos y usuarios.</p>
+                                    <a th:href="@{/reports}" class="btn btn-primary">Ir a Reportes</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 text-center">
+                    <img src="/images/representative.jpg" alt="Imagen Representativa" class="img-fluid" style="max-width: 400px;">
+                </div>
+            </div>
+            
+            
+            
+            
+        </div>
+        <div class="container mt-5">
+    <h2 class="text-center mb-4">¿Por Qué Elegir Nuestro Sistema?</h2>
+    <p class="text-justify" style="line-height: 1.8; text-align: center;">
+        Nuestro sistema bibliotecario online no solo simplifica las tareas administrativas, sino que también mejora la experiencia de los usuarios al ofrecer una interfaz amigable y funcionalidades avanzadas.
+                Ya sea para una biblioteca escolar, universitaria o pública, nuestra solución se adapta a tus necesidades específicas, ayudándote a optimizar recursos y mejorar el servicio ofrecido.
+    </p>
+    <p class="text-justify" style="line-height: 1.8; text-align: center;">
+    </p>
+</div>
+        <!-- Footer incluido desde el fragmento -->
+        <div th:replace="fragments :: footer"></div>
+
+        <!-- Bootstrap JS y dependencias -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
+</html>

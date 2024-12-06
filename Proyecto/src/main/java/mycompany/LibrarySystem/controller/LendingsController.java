@@ -1,4 +1,3 @@
-    
 package mycompany.LibrarySystem.controller;
 
 import java.time.LocalDate;
@@ -15,12 +14,15 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-
 /**
- *Controlador que gestiona los prestamos almacenados en la base de datos del sistema.
+ * Controlador que gestiona los préstamos almacenados en la base de datos del sistema.
  * 
- * <p>Permite listar, guardar, crear, eliminar y editar reportes del sistema.</p>
- * <p>Pasa los datos a la vista usando el objeto {@link Model}</p>
+ * <p>Proporciona funcionalidades para listar, crear, editar, eliminar y guardar préstamos. 
+ * Este controlador interactúa con los servicios {@link LendingService}, {@link BookService},
+ * y {@link UserService} para realizar las operaciones correspondientes en la base de datos.</p>
+ * 
+ * <p>Los datos se envían a las vistas utilizando el objeto {@link Model}, lo que permite 
+ * renderizar la interfaz de usuario con información actualizada.</p>
  * 
  * @author David Escalante
  * @version 02/12/2024
@@ -34,11 +36,11 @@ public class LendingsController {
     private final UserService userService;
 
     /**
-     *Constructor que inyecta las dependencias {@link lendingService}, {@link bookService}, {@link userService}.
+     * Constructor que inyecta las dependencias {@link LendingService}, {@link BookService}, y {@link UserService}.
      * 
-     * @param lendingService servicio que proporciona acceso a las operaciones de prestamos.
-     * @param bookService servicio que proporciona acceso a las operaciones de libros.
-     * @param userService servicio que proporciona acceso a las operaciones de usuarios.
+     * @param lendingService Servicio que proporciona acceso a las operaciones de préstamos.
+     * @param bookService Servicio que proporciona acceso a las operaciones de libros.
+     * @param userService Servicio que proporciona acceso a las operaciones de usuarios.
      */
     @Autowired
     public LendingsController(LendingService lendingService, BookService bookService, UserService userService) {
@@ -48,25 +50,28 @@ public class LendingsController {
     }
 
     /**
-     *Maneja solicitudes HTTP GET para listar prestamos.
+     * Maneja solicitudes HTTP GET para listar los préstamos del sistema.
      * 
-     * <p>Despliega los prestamos encontrados</p>
-    * 
-     * @param model el modelo utilizado para pasar datos a la vista.
-     * @return Nombre de la vista a renderizarse, en este caso la lista de prestamos {@code "lendings/list"}.
+     * <p>Recupera todos los préstamos registrados y los envía a la vista para su visualización.</p>
+     * 
+     * @param model Modelo utilizado para pasar datos a la vista.
+     * @return Nombre de la vista a renderizarse, en este caso, {@code "lendings/list"}.
      */
     @GetMapping
     public String listLendings(Model model) {
         List<Lending> lendings = lendingService.findAllLendings();
         model.addAttribute("lendings", lendings);
-        return "lendings/list"; // Asegúrate de tener esta vista
+        return "lendings/list";
     }
 
     /**
-     *Maneja solicitudes HTTP GET para mostrar el formulario de prestamo de un libro.
+     * Muestra el formulario para crear un nuevo préstamo.
      * 
-     * @param model modelo utilizado para pasar datos a la vista.
-     * @return Nombre de la vista a renderizarse, en este caso {@code "lendings/form"}.
+     * <p>Incluye la fecha actual como fecha de salida, además de cargar los datos de todos los 
+     * libros y usuarios disponibles.</p>
+     * 
+     * @param model Modelo utilizado para pasar datos a la vista.
+     * @return Nombre de la vista a renderizarse, en este caso, {@code "lendings/form"}.
      */
     @GetMapping("/new")
     public String showCreateForm(Model model) {
@@ -75,57 +80,55 @@ public class LendingsController {
         model.addAttribute("lending", lending);
         model.addAttribute("books", bookService.findAllBooks());
         model.addAttribute("users", userService.findAllUsers());
-        return "lendings/form"; // Asegúrate de tener esta vista
+        return "lendings/form";
     }
 
     /**
-     *Maneja solicitudes HTTP POST para mostrar el guardar el prestamo de un libro.
+     * Guarda un nuevo préstamo o actualiza uno existente en el sistema.
      * 
+     * <p>Valida que tanto el libro como el usuario existan antes de guardar el préstamo.
+     * En caso de error, se notifica al usuario mediante mensajes flash.</p>
      * 
-     * @param lending objeto {@link Lending} recibido desde el formulario de la vista.
-     * @param redirectAttributes: objeto {@link RedirectAttributes} que se utiliza para pasar mensajes
-     * de éxito o error entre redirecciones.
-     * @return Si no existe el usuario o el libro, se redirige a {@code "/lendings/new"}, en caso de que 
-     * ambos existan, el prestamo se guarda correctamente
+     * @param lending Objeto {@link Lending} recibido desde el formulario de la vista.
+     * @param redirectAttributes Objeto {@link RedirectAttributes} utilizado para pasar mensajes de éxito o error.
+     * @return Redirección a la lista de préstamos o al formulario de creación si ocurre un error.
      */
     @PostMapping("/save")
     public String saveLending(@ModelAttribute("lending") Lending lending, RedirectAttributes redirectAttributes) {
         try {
- 
-        Book book = bookService.findBookById(lending.getBook().getId());
-        if (book == null) {
-            redirectAttributes.addFlashAttribute("error", "El libro seleccionado no existe.");
+            Book book = bookService.findBookById(lending.getBook().getId());
+            if (book == null) {
+                redirectAttributes.addFlashAttribute("error", "El libro seleccionado no existe.");
+                return "redirect:/lendings/new";
+            }
+
+            User user = userService.findUserById(lending.getUser().getId());
+            if (user == null) {
+                redirectAttributes.addFlashAttribute("error", "El usuario seleccionado no existe.");
+                return "redirect:/lendings/new";
+            }
+
+            lending.setDateOut(LocalDate.now());
+            lending.setBook(book);
+            lending.setUser(user);
+            lendingService.saveLending(lending);
+            redirectAttributes.addFlashAttribute("message", "Préstamo guardado exitosamente.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Error al guardar el préstamo: " + e.getMessage());
             return "redirect:/lendings/new";
         }
-
-      
-        User user = userService.findUserById(lending.getUser().getId());
-        if (user == null) {
-            redirectAttributes.addFlashAttribute("error", "El usuario seleccionado no existe.");
-            return "redirect:/lendings/new";
-        }
-
- 
-        lending.setDateOut(LocalDate.now());
-
-        lending.setBook(book);
-        lending.setUser(user);
-        lendingService.saveLending(lending);
-        redirectAttributes.addFlashAttribute("message", "Préstamo guardado exitosamente.");
-    } catch (Exception e) {
-        redirectAttributes.addFlashAttribute("error", "Error al guardar el préstamo: " + e.getMessage());
-        return "redirect:/lendings/new";
-    }
-    return "redirect:/lendings";
+        return "redirect:/lendings";
     }
 
     /**
-     *Maneja solicitudes HTTP GET para eliminar un prestamo.
+     * Elimina un préstamo del sistema.
      * 
-     * @param id identificador unico del prestamo a eliminar.
-     * @param redirectAttributes: objeto {@link RedirectAttributes} que se utiliza para pasar mensajes
-     * de éxito o error.
-     * @return Redirección a la lista de prestamos {@code "redirect:/lendings"}.
+     * <p>Si la operación es exitosa, se muestra un mensaje de confirmación. En caso de error,
+     * se notifica al usuario.</p>
+     * 
+     * @param id Identificador único del préstamo a eliminar.
+     * @param redirectAttributes Objeto {@link RedirectAttributes} utilizado para pasar mensajes de éxito o error.
+     * @return Redirección a la lista de préstamos.
      */
     @GetMapping("/delete/{id}")
     public String deleteLending(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
@@ -139,12 +142,14 @@ public class LendingsController {
     }
 
     /**
-     *Maneja solicitudes HTTP GET para editar un prestamo.
+     * Muestra el formulario para editar un préstamo existente.
      * 
-     * @param id identificador unico del prestamo a editar.
-     * @param model modelo utilizado para pasar datos a la vista.
-     * @return En caso de no encontrar un prestamo con la id proporcionada, se hará una redirección a la lista de
-     * de prestamos, en caso contrario, se añaden los atributos a la vista y se renderiza el formulario de prestamos.
+     * <p>Si el préstamo no existe, redirige a la lista de préstamos. Si existe, carga los datos
+     * necesarios para la edición, incluyendo la lista de libros y usuarios disponibles.</p>
+     * 
+     * @param id Identificador único del préstamo a editar.
+     * @param model Modelo utilizado para pasar datos a la vista.
+     * @return Nombre de la vista a renderizarse, o redirección a la lista de préstamos si el préstamo no existe.
      */
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable("id") Integer id, Model model) {
@@ -158,3 +163,4 @@ public class LendingsController {
         return "lendings/form";
     }
 }
+

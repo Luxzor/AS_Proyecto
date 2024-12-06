@@ -1,5 +1,3 @@
-// src/main/java/mycompany/SpringPruebaMVC/model/services/LendingsDetailedServiceImpl.java
-
 package mycompany.LibrarySystem.model.services;
 
 import mycompany.LibrarySystem.model.entities.LendingsDetailed;
@@ -10,10 +8,14 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 /**
- *Clase que implementa el metodo de gestion de prestamos detallados definido en la interfaz LendingService.
+ * Clase que implementa los métodos definidos en la interfaz {@link LendingsDetailedService} para la gestión
+ * de préstamos detallados.
+ * 
+ * <p>Proporciona la lógica de negocio para buscar préstamos pendientes basándose en el nombre de un usuario.
+ * Utiliza el repositorio {@link LendingsDetailedRepository} para interactuar con la base de datos.</p>
  * 
  * @author Luis Montero
- * @version 02/12/24
+ * @version 02/12/2024
  */
 @Service
 public class LendingsDetailedServiceImpl implements LendingsDetailedService {
@@ -21,9 +23,9 @@ public class LendingsDetailedServiceImpl implements LendingsDetailedService {
     private final LendingsDetailedRepository lendingsDetailedRepository;
 
     /**
-     *Constructor que inyecta la dependencias {@link lendingsDetailedRepository}.
+     * Constructor que inyecta la dependencia {@link LendingsDetailedRepository}.
      * 
-     * @param lendingsDetailedRepository
+     * @param lendingsDetailedRepository Repositorio que permite realizar consultas relacionadas con préstamos detallados.
      */
     @Autowired
     public LendingsDetailedServiceImpl(LendingsDetailedRepository lendingsDetailedRepository) {
@@ -31,13 +33,17 @@ public class LendingsDetailedServiceImpl implements LendingsDetailedService {
     }
 
     /**
-     *Busca y devuelve los préstamos pendientes por usuario segun el nombre de este.
+     * Busca y devuelve los préstamos pendientes de un usuario según su nombre.
      * 
-     * @param userName el nombre de usuario que se usará en la busqueda.
-     * @return Lista de préstamos detallados del usuario buscado.
+     * <p>Un préstamo se considera pendiente si no tiene una fecha de devolución registrada.</p>
+     * 
+     * @param userName El nombre del usuario por el cual se buscarán los préstamos pendientes.
+     * @return Lista de objetos {@link LendingsDetailed} que representan los préstamos pendientes del usuario.
+     *         Si no se encuentran préstamos pendientes, devuelve una lista vacía.
      */
     @Override
     public List<LendingsDetailed> findPendingLendingsByUserName(String userName) {
         return lendingsDetailedRepository.findByUserNameAndDateReturnIsNull(userName);
     }
 }
+
